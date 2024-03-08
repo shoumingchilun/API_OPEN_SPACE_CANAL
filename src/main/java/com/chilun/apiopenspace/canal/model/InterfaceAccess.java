@@ -16,7 +16,8 @@ public class InterfaceAccess implements Serializable {
     private Integer verifyType;
     private String secretkey;
     private BigDecimal remainingAmount;
-    private Integer remainingTimes;
+    private BigDecimal cost;
+    private Date expiration;
     private Long interfaceId;
     private Long userid;
     private Integer callTimes;

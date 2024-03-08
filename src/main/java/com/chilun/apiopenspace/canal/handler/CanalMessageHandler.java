@@ -125,32 +125,30 @@ public class CanalMessageHandler implements ApplicationRunner {
         Integer verifyType = Integer.parseInt(rowData.getAfterColumns(1).getValue());
         //允许为空的参数如果为空，则column.getValue().equals("")
         String secretkey = rowData.getAfterColumns(2).getValue().equals("") ? null : rowData.getAfterColumns(2).getValue();
-        BigDecimal remainingAmount = null;
-        if (!rowData.getAfterColumns(3).getValue().equals("")) {
-            remainingAmount = new BigDecimal(rowData.getAfterColumns(3).getValue());
-        }
-        Integer remainingTimes = null;
-        if (!rowData.getAfterColumns(4).getValue().equals("")) {
-            remainingTimes = Integer.parseInt(rowData.getAfterColumns(4).getValue());
-        }
-        Long interfaceId = Long.parseLong(rowData.getAfterColumns(5).getValue());
-        Long userid = Long.parseLong(rowData.getAfterColumns(6).getValue());
-        Integer callTimes = Integer.parseInt(rowData.getAfterColumns(7).getValue());
-        Integer failedCallTimes = Integer.parseInt(rowData.getAfterColumns(8).getValue());
+        BigDecimal remainingAmount = new BigDecimal(rowData.getAfterColumns(3).getValue());
+        BigDecimal cost = new BigDecimal(rowData.getAfterColumns(4).getValue());
+
+        Long interfaceId = Long.parseLong(rowData.getAfterColumns(6).getValue());
+        Long userid = Long.parseLong(rowData.getAfterColumns(7).getValue());
+        Integer callTimes = Integer.parseInt(rowData.getAfterColumns(8).getValue());
+        Integer failedCallTimes = Integer.parseInt(rowData.getAfterColumns(9).getValue());
+        Date expiration = null;
         Date createTime = null;
         Date updateTime = null;
         try {
-            createTime = sdf.parse(rowData.getAfterColumns(9).getValue());
-            updateTime = sdf.parse(rowData.getAfterColumns(10).getValue());
+            expiration = sdf.parse(rowData.getAfterColumns(5).getValue());
+            createTime = sdf.parse(rowData.getAfterColumns(10).getValue());
+            updateTime = sdf.parse(rowData.getAfterColumns(11).getValue());
         } catch (ParseException e) {
             log.error("解析日期失败：", e);
         }
-        Integer isDeleted = Integer.parseInt(rowData.getAfterColumns(11).getValue());
+        Integer isDeleted = Integer.parseInt(rowData.getAfterColumns(12).getValue());
         interfaceAccess.setAccesskey(accesskey);
         interfaceAccess.setVerifyType(verifyType);
         interfaceAccess.setSecretkey(secretkey);
         interfaceAccess.setRemainingAmount(remainingAmount);
-        interfaceAccess.setRemainingTimes(remainingTimes);
+        interfaceAccess.setCost(cost);
+        interfaceAccess.setExpiration(expiration);
         interfaceAccess.setInterfaceId(interfaceId);
         interfaceAccess.setUserid(userid);
         interfaceAccess.setCallTimes(callTimes);
