@@ -7,6 +7,7 @@ import com.chilun.apiopenspace.canal.model.InterfaceAccess;
 import com.chilun.apiopenspace.canal.service.RedisService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -46,10 +47,10 @@ public class CanalMessageHandler implements ApplicationRunner {
             connector.subscribe("api_open_platform.interface_access");
             // 回滚到未进行 ack 的地方，下次fetch的时候，可以从最后一个没有 ack 的地方开始拿
             connector.rollback();
-            // 如果3600s内没有监听到更改，则报错并停止运行
-            int totalEmptyCount = 3600;
+            // 如果3600*24*30s内没有监听到更改，则报错并停止运行
+            int totalEmptyCount = 3600*24*30;
             while (emptyCount < totalEmptyCount) {
-                System.out.println("正在监听canal Server: " + System.currentTimeMillis());
+                System.out.println("正在监听canal Server: " + new Date());
                 Message message = connector.getWithoutAck(batchSize); // 获取指定数量的数据
                 long batchId = message.getId();
                 int size = message.getEntries().size();
