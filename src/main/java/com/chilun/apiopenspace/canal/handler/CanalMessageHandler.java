@@ -5,9 +5,7 @@ import com.alibaba.otter.canal.protocol.CanalEntry;
 import com.alibaba.otter.canal.protocol.Message;
 import com.chilun.apiopenspace.canal.model.InterfaceAccess;
 import com.chilun.apiopenspace.canal.service.RedisService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -50,7 +48,7 @@ public class CanalMessageHandler implements ApplicationRunner {
             // 如果3600*24*30s内没有监听到更改，则报错并停止运行
             int totalEmptyCount = 3600*24*30;
             while (emptyCount < totalEmptyCount) {
-                System.out.println("正在监听canal Server: " + new Date());
+                log.info("正在监听canal Server: " + new Date());
                 Message message = connector.getWithoutAck(batchSize); // 获取指定数量的数据
                 long batchId = message.getId();
                 int size = message.getEntries().size();
@@ -100,10 +98,6 @@ public class CanalMessageHandler implements ApplicationRunner {
             for (RowData rowData : rowchange.getRowDatasList()) {
                 //由于使用逻辑删除，delete实现方式为将is_deleted属性设置为1，所以删除逻辑写在update中
                 if (eventType == EventType.UPDATE) {
-                    //可使用该方式查看各个index对应的列名是什么
-//                    rowData.getAfterColumnsList().stream().forEach(column -> {
-//                        System.out.println(column.getName());
-//                    });
                     InterfaceAccess interfaceAccess = parseRowDateIntoInterfaceAccess(rowData);
                     if (interfaceAccess.getIsDeleted() == 1) {
                         //说明已经删除，需要同步删除
